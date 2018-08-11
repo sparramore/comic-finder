@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div id="main-container" class="container-fluid">
@@ -16,10 +15,230 @@
           <div class="col-lg-2 col-sm-0 col-xs-0"></div>
           <div class="col-lg-8 col-sm-12 col-xs-12">
             <section class="main-section">
+
+                <div class="modal" tabindex="-1" role="dialog" id="answerDialog">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">You Should Read</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <h3 id="comic_title"></h3>
+                          <img id ="comic_image" src="#" alt="Comic!">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeBtn">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                <div class="jumbotron">
+                    <h1>Survey Questions</h1>
+                    <h3>Do you like comics that feature a prominent female lead?</h3>
+
+                    <form>
+                        <div class="form-group">
+                          <label for="exampleFormControlSelect1">Select an Option(1-Strongly Dislike | 5-Strongly Like)</label>
+                          <select class="form-control" id="question0">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>What about comics that have an ensemble cast?</h3>
+
+                    <form>
+                        <div class="form-group">
+                          <label for="Option">Select an Option(1-Strongly Dislike | 5-Strongly Like)</label>
+                          <select class="form-control" id="question1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>Do you like comics with supernatural elements?</h3>
+
+                    <form>
+                        <div class="form-group">
+                          <label for="Option">Select an Option(1-Strongly Like | 5-Strongly Dislike)</label>
+                          <select class="form-control" id="question2">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>Do you like a modern setting or futuristic settings?</h3>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="Option">Select an Option(1-More Modern | 5-More futuristic)</label>
+                          <select class="form-control" id="question3">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>do you want the main character have supernatural abilities?</h3>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="Option">Select an Option(1-Strongly Disagree | 5-Strongly Agree)</label>
+                          <select class="form-control" id="question4">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>how much interaction with mainstream DC characters do you want?</h3>
+
+                    <form>
+                        <div class="form-group">
+                          <label for="Option">Select an Option(1-None | 5-A lot)</label>
+                          <select class="form-control" id="question5">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <h3>do you like comics that feature multiple story arcs?</h3>
+
+                    <form>
+                        <div class="form-group">
+                          <label for="Option">Select an Option(1-Strongly Like | 5-Strongly Dislike)</label>
+                          <select class="form-control" id="question6">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                          </select>
+                      </div>
+                    </form>
+
+                    <button id="submitBtn">Submit</button>
+
+                </div>
             </section>
           </div>
           <div class="col-lg-2 col-sm-0 col-xs-0"></div>
         </div>
         </div>
+
+        <script type="text/javascript">
+          $(document).ready(function(){
+
+            $(".close").click(function () {
+              $("#answerDialog").hide();
+            });
+            $("#closeBtn").click(function () {
+              $("#answerDialog").hide();
+            });
+          
+          $("#submitBtn").click(function() {
+            console.log("submitPressed");
+            $.ajax({url: "api/comics", method: "GET"}).then(function (response) 
+            {
+                var leastDifference = 45;
+                var recommendedComic = 0;
+                for(var i = 0;i < response.comics.length;i++)
+                {
+                    var CurrDifference = 0;
+                    console.log("length: " + response.comics[i].scores.length);
+                    for(var y = 0;y < response.comics[i].scores.length;y++)
+                    {
+                        var userResponse = $("#question" + y).val();
+                        console.log(userResponse);
+                        console.log(response.comics[i].scores[y]);
+                        CurrDifference += Math.abs(userResponse - response.comics[i].scores[y]);
+                    }
+                    console.log("current Difference: " + CurrDifference);
+                    console.log("leastDifference: " + leastDifference);
+                    if(CurrDifference < leastDifference)
+                    {
+                      leastDifference = CurrDifference;
+                      recommendedComic = i;
+                    }
+                }
+                var loc = window.location.pathname;
+                var curDir = loc.substring(0, loc.lastIndexOf('/'));
+                console.log("currentDir: " + loc + "../../data/100bullets.jpg");
+                $("#comic_title").html(response.comics[recommendedComic].name);
+                //$("#comic_image").attr('src',"../data/100bullets.jpg"); 
+
+                        $.ajax({
+                url:'/data/100bullets.jpg',
+                type:'HEAD',
+                error: function()
+                {
+                //file not exists
+                console.log("file doesn't exist")
+                },
+                success: function()
+                {
+                  console.log("file exists");
+                //file exists
+                }
+                });
+                $("#answerDialog").show();
+
+                
+            });   
+
+      
+          });
+        }); 
+      
+      </script>
 </body>
 </html>
+
+
+
+<!-- 
+  features a prominent female lead.
+  has an emsemble cast
+  do you like comics with supernatural elements.
+  modern setting or in the future
+  does the main character have supernatural abilities
+  does the main character interact with mainstream DC characters
+  do you like comics that feature multiple story arcs?
+
+hellblazer
+fables
+the sandman
+transmetropolitan
+100 bullets
+preacher
+Y the last man
+tank girl
+swamp thing
+ -->
